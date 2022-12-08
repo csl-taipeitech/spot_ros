@@ -15,7 +15,15 @@
     <group ns="bluetooth_teleop">
       <param name="joy_node/dev" value="$(arg joy_dev)" />
       <node pkg="joy" type="joy_node" name="joy_node" />
-      <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy"/>
+      <!-- <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy"/> -->
+      <node pkg="spot_driver" type="spot_controller" name="F710_controller" output="screen">
+        <remap from="estop/gentle" to="/spot/estop/gentle" />
+        <remap from="stand" to="/spot/stand" />
+        <remap from="sit" to="/spot/sit" />
+        <remap from="stair_mode" to="/spot/stair_mode" />
+        <remap from="locomotion_mode" to="/spot/locomotion_mode" />
+        <remap from="body_pose" to="/spot/body_pose" />
+      </node>
     </group>
   </group>
 </launch>

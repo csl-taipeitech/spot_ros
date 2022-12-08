@@ -730,7 +730,10 @@ class SpotWrapper:
 
     def getLease(self):
         """Get a lease for the robot and keep the lease alive automatically."""
-        self._lease = self._lease_client.acquire()
+        if self._lease_client.list_leases():
+            self._lease = self._lease_client.take()
+        else:
+            self._lease = self._lease_client.acquire()
         self._lease_keepalive = LeaseKeepAlive(self._lease_client)
 
     def releaseLease(self):
@@ -742,6 +745,7 @@ class SpotWrapper:
     def release(self):
         """Return the lease on the body and the eStop handle."""
         try:
+            self.safe_power_off()
             self.releaseLease()
             self.releaseEStop()
             return True, "Success"

@@ -8,7 +8,7 @@ from sensor_msgs.msg import Image, CameraInfo
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import TwistWithCovarianceStamped, Twist, Pose, PoseStamped
 from nav_msgs.msg import Odometry
-
+from tf.transformations import euler_from_quaternion
 
 from bosdyn.api.spot import robot_command_pb2 as spot_command_pb2
 from bosdyn.api import geometry_pb2, trajectory_pb2
@@ -98,6 +98,7 @@ class SpotROS:
 
     def __init__(self):
         self.spot_wrapper = None
+        self.estop_status = False
 
         self.callbacks = {}
         """Dictionary listing what callback to use for what data task"""
@@ -326,6 +327,7 @@ class SpotROS:
     def handle_claim(self, req):
         """ROS service handler for the claim service"""
         resp = self.spot_wrapper.claim()
+        self.estop_status = True
         return TriggerResponse(resp[0], resp[1])
 
     def handle_release(self, req):
@@ -445,8 +447,11 @@ class SpotROS:
 
     def handle_power_on(self, req):
         """ROS service handler for the power-on service"""
-        resp = self.spot_wrapper.power_on()
-        return TriggerResponse(resp[0], resp[1])
+        if self.estop_status:
+            resp = self.spot_wrapper.power_on()
+            return TriggerResponse(resp[0], resp[1])
+        else:
+            return TriggerResponse(False, "Enable estop first")
 
     def handle_safe_power_off(self, req):
         """ROS service handler for the safe-power-off service"""
@@ -456,17 +461,20 @@ class SpotROS:
     def handle_estop_hard(self, req):
         """ROS service handler to hard-eStop the robot.  The robot will immediately cut power to the motors"""
         resp = self.spot_wrapper.assertEStop(True)
+        self.estop_status = False
         return TriggerResponse(resp[0], resp[1])
 
     def handle_estop_soft(self, req):
         """ROS service handler to soft-eStop the robot.  The robot will try to settle on the ground before cutting
         power to the motors"""
         resp = self.spot_wrapper.assertEStop(False)
+        self.estop_status = False
         return TriggerResponse(resp[0], resp[1])
 
     def handle_estop_disengage(self, req):
         """ROS service handler to disengage the eStop on the robot."""
         resp = self.spot_wrapper.disengageEStop()
+        self.estop_status = True
         return TriggerResponse(resp[0], resp[1])
 
     def handle_clear_behavior_fault(self, req):
@@ -772,6 +780,15 @@ class SpotROS:
         except tf2_ros.LookupException as e:
             rospy.logerr(str(e))
 
+    def body_pose_callback(self, msg):
+        if not self.robot_allowed_to_move(autonomous_command=False):
+            rospy.logerr("body pose received a message but motion is not allowed.")
+            return
+        
+        roll, pitch ,yaw = euler_from_quaternion([msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w])
+
+        self.spot_wrapper.stand(body_height=msg.position.z, body_yaw=yaw, body_pitch=pitch, body_roll=roll)
+        
     def handle_trajectory(self, req):
         """ROS actionserver execution handler to handle receiving a request to move to a location"""
         if not self.robot_allowed_to_move():
@@ -1519,6 +1536,7 @@ class SpotROS:
         rospy.Subscriber(
             "go_to_pose", PoseStamped, self.trajectory_callback, queue_size=1
         )
+        rospy.Subscriber("body_pose", Pose, self.body_pose_callback, queue_size=1)
         rospy.Subscriber(
             "in_motion_or_idle_body_pose",
             Pose,
