@@ -207,7 +207,7 @@ class AsyncIdle(AsyncPeriodicQuery):
                 ):
                     self._spot_wrapper._is_standing = False
                 else:
-                    self._logger.warn("Stand command in unknown state")
+                    # self._logger.warn("Stand command in unknown state")
                     self._spot_wrapper._is_standing = False
             except (ResponseError, RpcError) as e:
                 self._logger.error("Error when getting robot command feedback: %s", e)

@@ -396,26 +396,6 @@ class SpotROS:
         )
         return PosedStandResponse(success, message)
 
-    def handle_posed_stand_action(self, action):
-        """
-        Handle a call to the posed stand actionserver
-
-        If no value is provided, this is equivalent to the basic stand commmand
-
-        Args:
-            action: PoseBodyGoal
-
-        """
-        success, message = self._posed_stand(
-            action.body_height, action.yaw, action.pitch, action.roll
-        )
-        result = PoseBodyResult(success, message)
-        rospy.sleep(2)  # Only return after the body has had a chance to move
-        if success:
-            self.body_pose_as.set_succeeded(result)
-        else:
-            self.body_pose_as.set_aborted(result)
-
     def _posed_stand(self, body_height, yaw, pitch, roll):
         """
         Make the robot do a posed stand with specified body height and orientation
@@ -1615,14 +1595,6 @@ class SpotROS:
             auto_start=False,
         )
         self.motion_or_idle_body_pose_as.start()
-
-        self.body_pose_as = actionlib.SimpleActionServer(
-            "body_pose",
-            PoseBodyAction,
-            execute_cb=self.handle_posed_stand_action,
-            auto_start=False,
-        )
-        self.body_pose_as.start()
 
         # Stop service calls other services so initialise it after them to prevent crashes which can happen if
         # the service is immediately called
