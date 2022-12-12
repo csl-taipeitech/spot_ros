@@ -3,18 +3,19 @@
 
   <xacro:if value="$(optenv SPOT_PACK 0)">
     <joint name="pack_mount_joint" type="fixed">
-      <parent link="base_link"/>
+      <parent link="body"/>
       <child link="pack_mount"/>
-      <origin xyz="-0.019986 0 0.093662" rpy="0 0 0"/>
+      <origin xyz="-0.13 0 0.12" rpy="0 0 0"/>
     </joint>
 
     <link name="pack_mount">
       <visual>
         <geometry>
-          <mesh filename="package://spot_description/meshes/pack_top.dae"/>
+          <box size="0.21 0.15 0.075"/>
+          <!-- <mesh filename="package://spot_description/meshes/pack_top.dae"/> -->
         </geometry>
       </visual>
-      <visual>
+      <!-- <visual>
         <geometry>
           <mesh filename="package://spot_description/meshes/pack_body.dae"/>
         </geometry>
@@ -23,7 +24,7 @@
         <geometry>
           <mesh filename="package://spot_description/meshes/pack_body.dae"/>
         </geometry>
-      </collision>
+      </collision> -->
     </link>
   </xacro:if>
 
@@ -31,11 +32,11 @@
     <joint name="lidar_mount_joint" type="fixed">
       <parent link="pack_mount"/>
       <child link="lidar_mount"/>
-      <origin xyz="0.015 0 0.149285" rpy="0 0 0"/>
+      <origin xyz="-0.11 0 0.05" rpy="0 0 0"/>
     </joint>
 
     <link name="lidar_mount">
-      <visual>
+      <!-- <visual>
         <geometry>
           <mesh filename="package://spot_description/meshes/lidar_mount.dae"/>
         </geometry>
@@ -44,7 +45,7 @@
         <geometry>
           <mesh filename="package://spot_description/meshes/lidar_mount_collision.stl"/>
         </geometry>
-      </collision>
+      </collision> -->
     </link>
 
     <xacro:if value="$(optenv SPOT_VELODYNE 0)">
