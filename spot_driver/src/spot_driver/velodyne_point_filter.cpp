@@ -8,13 +8,13 @@
 #include <pcl/filters/passthrough.h>
 #include <pcl_conversions/pcl_conversions.h>
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr points (new pcl::PointCloud<pcl::PointXYZ>);
+pcl::PointCloud<pcl::PointXYZI>::Ptr points (new pcl::PointCloud<pcl::PointXYZI>);
 sensor_msgs::PointCloud2 points2;
 ros::Publisher points_pub;
 
 void point_cb(const sensor_msgs::PointCloud2Ptr & pt_ptr)
 {
-  static pcl::PassThrough<pcl::PointXYZ> pass;
+  static pcl::PassThrough<pcl::PointXYZI> pass;
   
   pcl::fromROSMsg(*pt_ptr, *points);
   if (points->points.size() == 0)

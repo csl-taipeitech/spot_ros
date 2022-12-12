@@ -12,7 +12,7 @@ class SpotControl:
         self.stair_mode = SetBoolRequest()
         self.stair_mode.data = False
         self.current_mode = ''
-        self.linear_scale = 0.3
+        self.linear_scale = 0.5
         self.angular_scale = 0.5
         
     def joy_callback(self, data: Joy):

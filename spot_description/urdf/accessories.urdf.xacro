@@ -51,7 +51,7 @@
     <xacro:if value="$(optenv SPOT_VELODYNE 0)">
       <!-- Use the Velodyne macro for the actual sensor -->
       <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro" />
-      <xacro:VLP-16 parent="lidar_mount">
+      <xacro:VLP-16 parent="velodyne_cage">
         <origin xyz="$(optenv SPOT_VELODYNE_XYZ 0 0 0)" rpy="$(optenv SPOT_VELODYNE_RPY 0 0 0)" />
       </xacro:VLP-16>
 
@@ -62,7 +62,6 @@
             <mesh filename="package://spot_description/meshes/velodyne_cage.stl" scale="0.001 0.001 0.001" />
           </geometry>
           <origin xyz="0 0 0" rpy="0 0 0" />
-          <material name="black" />
         </visual>
         <collision>
           <geometry>

@@ -767,7 +767,7 @@ class SpotROS:
         
         roll, pitch ,yaw = euler_from_quaternion([msg.orientation.x, msg.orientation.y, msg.orientation.z, msg.orientation.w])
 
-        self.spot_wrapper.stand(body_height=msg.position.z, body_yaw=yaw, body_pitch=pitch, body_roll=roll)
+        self.spot_wrapper.stand(body_height=msg.position.z, body_yaw=yaw, body_pitch=pitch, body_roll=roll, monitor_command=False)
         
     def handle_trajectory(self, req):
         """ROS actionserver execution handler to handle receiving a request to move to a location"""
