@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 2.8.3)
 project(spot_driver)
 
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
   rospy
+  sensor_msgs
+)
+find_package(
+  PCL REQUIRED
 )
 
 catkin_package()
@@ -10,8 +15,12 @@ catkin_package()
 catkin_python_setup()
 
 include_directories(
+  ${PCL_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
+
+add_executable(velodyne_filter src/spot_driver/velodyne_point_filter.cpp)
+target_link_libraries(velodyne_filter ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
 catkin_install_python(PROGRAMS
     scripts/spot_ros

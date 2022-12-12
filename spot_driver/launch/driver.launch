@@ -31,6 +31,11 @@
     <remap from="tf" to="/tf"/>
   </node>
 
+  <node pkg="spot_driver" type="velodyne_filter" name="velodyne_filter_node" output="screen">
+    <remap from="velodyne_points" to="/velodyne_points" />
+    <remap from="velodyne_filtered" to="/velodyne_filter_points"/>
+  </node>
+
   <node pkg="twist_mux" type="twist_mux" name="twist_mux" >
     <rosparam command="load" file="$(find spot_driver)/config/twist_mux.yaml" />
     <remap from="cmd_vel_out" to="spot/cmd_vel"/>
