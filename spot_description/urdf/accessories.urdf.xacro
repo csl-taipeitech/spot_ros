@@ -81,4 +81,26 @@
   <xacro:if value="$(optenv SPOT_ARM 0)">
     <xacro:include filename="$(find spot_description)/urdf/spot_arm.xacro" />
   </xacro:if>
+
+  <xacro:if value="$(optenv SPOT_IMU 0)">
+    <link name="imu">
+      <visual>
+          <geometry>
+            <box size="0.033 0.0245 0.0127"/>
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+        </visual>
+        <collision>
+          <geometry>
+            <box size="0.033 0.0245 0.0127"/>
+          </geometry>
+          <origin xyz="0 0 0" rpy="0 0 0" />
+        </collision>
+    </link>
+    <joint name="imu_joint" type="fixed">
+        <parent link="velodyne_cage" />
+        <child link="imu" />
+        <origin xyz="0 0 0.08" rpy="3.1415 0 0" />
+      </joint>
+  </xacro:if>
 </robot>

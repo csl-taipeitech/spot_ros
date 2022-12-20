@@ -12,8 +12,9 @@ class SpotControl:
         self.stair_mode = SetBoolRequest()
         self.stair_mode.data = False
         self.current_mode = ''
-        self.linear_scale = 0.5
-        self.angular_scale = 0.5
+        self.linear_x_scale = 0.8
+        self.linear_y_scale = 0.5
+        self.angular_scale = 0.8
         
     def joy_callback(self, data: Joy):
         # Logi F710
@@ -57,15 +58,15 @@ class SpotControl:
         if data.buttons[4] != 1 and data.buttons[3] == 1 and self.stair_mode.data != True:
             self.stair_mode.data = True
             self.current_mode = 'Stair'
-            self.stair_client.call(self.stair_mode) # Sit
+            self.stair_client.call(self.stair_mode) # Stair
         
         if self.current_mode == 'Hop' or self.current_mode == 'Jog' \
             or self.current_mode == 'Amble' or self.current_mode == 'Crawl' \
             or self.current_mode == 'Walk' or self.current_mode == 'Stair':
             # cmd_vel
             vel = Twist()
-            vel.linear.x = data.axes[1]*self.linear_scale
-            vel.linear.y = data.axes[0]*self.linear_scale
+            vel.linear.x = data.axes[1]*self.linear_x_scale
+            vel.linear.y = data.axes[0]*self.linear_y_scale
             vel.angular.z = data.axes[2]*self.angular_scale
             self.cmd_pub.publish(vel)
         
@@ -73,8 +74,8 @@ class SpotControl:
             pose = Pose()
             pose.position.x = 0
             pose.position.y = 0
-            pose.position.z = data.axes[1]*0.1
-            roll, pitch, yaw = -data.axes[0]*0.4, -data.axes[3]*0.4, data.axes[2]*0.4
+            pose.position.z = data.axes[1]*0.2
+            roll, pitch, yaw = -data.axes[0]*0.6, -data.axes[3]*0.6, data.axes[2]*0.6
             q = quaternion_from_euler(roll, pitch, yaw)
             pose.orientation.x = q[0]
             pose.orientation.y = q[1]
@@ -84,7 +85,7 @@ class SpotControl:
         
         if self.current_mode != 'Stair' and self.stair_mode.data == True:
             self.stair_mode.data = False
-            self.stair_client.call(self.stair_mode) # Sit
+            self.stair_client.call(self.stair_mode) # Stair
                         
     def main(self):
         rospy.init_node('spot_controller')
