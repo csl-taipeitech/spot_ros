@@ -1416,12 +1416,12 @@ class SpotROS:
         self.hand_depth_in_hand_color_pub = rospy.Publisher(
             "depth/hand/depth_in_color", Image, queue_size=10
         )
-        self.frontleft_depth_in_visual_pub = rospy.Publisher(
-            "depth/frontleft/depth_in_visual", Image, queue_size=10
-        )
-        self.frontright_depth_in_visual_pub = rospy.Publisher(
-            "depth/frontright/depth_in_visual", Image, queue_size=10
-        )
+        # self.frontleft_depth_in_visual_pub = rospy.Publisher(
+        #     "depth/frontleft/depth_in_visual", Image, queue_size=10
+        # )
+        # self.frontright_depth_in_visual_pub = rospy.Publisher(
+        #     "depth/frontright/depth_in_visual", Image, queue_size=10
+        # )
 
         # Image Camera Info #
         self.back_image_info_pub = rospy.Publisher(
@@ -1468,12 +1468,12 @@ class SpotROS:
         self.hand_depth_in_color_info_pub = rospy.Publisher(
             "camera/hand/depth_in_color/camera_info", CameraInfo, queue_size=10
         )
-        self.frontleft_depth_in_visual_info_pub = rospy.Publisher(
-            "depth/frontleft/depth_in_visual/camera_info", CameraInfo, queue_size=10
-        )
-        self.frontright_depth_in_visual_info_pub = rospy.Publisher(
-            "depth/frontright/depth_in_visual/camera_info", CameraInfo, queue_size=10
-        )
+        # self.frontleft_depth_in_visual_info_pub = rospy.Publisher(
+        #     "depth/frontleft/depth_in_visual/camera_info", CameraInfo, queue_size=10
+        # )
+        # self.frontright_depth_in_visual_info_pub = rospy.Publisher(
+        #     "depth/frontright/depth_in_visual/camera_info", CameraInfo, queue_size=10
+        # )
 
         # Status Publishers #
         self.joint_state_pub = rospy.Publisher(

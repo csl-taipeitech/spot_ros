@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="depth_nodelet_manager" default="depth_nodelet_manager"/>
+
+  <node pkg="spot_driver" type="velodyne_filter" name="velodyne_filter_node" output="screen">
+    <remap from="velodyne_points" to="/velodyne_points" />
+    <remap from="velodyne_filtered" to="/velodyne_filter_points"/>
+  </node>
+
+  <group ns="spot">
+    <node pkg="nodelet" type="nodelet" name="$(arg depth_nodelet_manager)" args="manager" output="screen"/>
+
+    <node pkg="nodelet" type="nodelet" name="frontleft_depth" args="load depth_image_proc/point_cloud_xyz $(arg depth_nodelet_manager)">
+      <remap from="image_rect" to="depth/frontleft/image"/>
+      <remap from="camera_info" to="depth/frontleft/camera_info"/>
+      <remap from="points" to="depth/frontleft/points"/>
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="frontright_depth" args="load depth_image_proc/point_cloud_xyz $(arg depth_nodelet_manager)">
+      <remap from="image_rect" to="depth/frontright/image"/>
+      <remap from="camera_info" to="depth/frontright/camera_info"/>
+      <remap from="points" to="depth/frontright/points"/>
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="left_depth" args="load depth_image_proc/point_cloud_xyz $(arg depth_nodelet_manager)">
+      <remap from="image_rect" to="depth/left/image"/>
+      <remap from="camera_info" to="depth/left/camera_info"/>
+      <remap from="points" to="depth/left/points"/>
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="right_depth" args="load depth_image_proc/point_cloud_xyz $(arg depth_nodelet_manager)">
+      <remap from="image_rect" to="depth/right/image"/>
+      <remap from="camera_info" to="depth/right/camera_info"/>
+      <remap from="points" to="depth/right/points"/>
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="back_depth" args="load depth_image_proc/point_cloud_xyz $(arg depth_nodelet_manager)">
+      <remap from="image_rect" to="depth/back/image"/>
+      <remap from="camera_info" to="depth/back/camera_info"/>
+      <remap from="points" to="depth/back/points"/>
+    </node>
+    
+  </group>
+
+  <node pkg="spot_driver" type="pointcloud_fusion" name="pointcloud_fusion" ns="spot">
+    <remap from="frontleft_points" to="depth/frontleft/points"/>
+    <remap from="frontright_points" to="depth/frontright/points"/>
+    <remap from="left_points" to="depth/left/points"/>
+    <remap from="right_points" to="depth/right/points"/>
+    <remap from="back_points" to="depth/back/points"/>
+    <remap from="velodyne_points" to="/velodyne_filter_points"/>
+
+    <param name="enable_frontleft"  value="true"/>
+    <param name="enable_frontright" value="true"/>
+    <param name="enable_left"       value="true"/>
+    <param name="enable_right"      value="true"/>
+    <param name="enable_back"       value="true"/>
+    <param name="enable_velodyne"   value="true"/>
+  </node>
+
+</launch>

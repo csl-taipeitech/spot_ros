@@ -59,7 +59,9 @@ class SpotControl:
             self.stair_mode.data = True
             self.current_mode = 'Stair'
             self.stair_client.call(self.stair_mode) # Stair
-        
+        if data.buttons[9] == 1:
+            self.current_mode = 'Auto'
+            
         if self.current_mode == 'Hop' or self.current_mode == 'Jog' \
             or self.current_mode == 'Amble' or self.current_mode == 'Crawl' \
             or self.current_mode == 'Walk' or self.current_mode == 'Stair':

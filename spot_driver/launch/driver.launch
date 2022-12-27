@@ -15,6 +15,7 @@
   <include file="$(find spot_description)/launch/description.launch" />
   <include file="$(find spot_driver)/launch/control.launch" />
   <include file="$(find spot_driver)/launch/accessories.launch" />
+  <include file="$(find spot_driver)/launch/sensors.launch" />
 
   <node pkg="spot_driver" type="spot_ros" name="spot_ros"  ns="spot" output="screen">
     <rosparam file="$(arg driver_config)" command="load" />
@@ -30,11 +31,6 @@
     <param name="allow_motion" value="$(arg allow_motion)"/>
     <remap from="joint_states" to="/joint_states"/>
     <remap from="tf" to="/tf"/>
-  </node>
-
-  <node pkg="spot_driver" type="velodyne_filter" name="velodyne_filter_node" output="screen">
-    <remap from="velodyne_points" to="/velodyne_points" />
-    <remap from="velodyne_filtered" to="/velodyne_filter_points"/>
   </node>
 
   <node pkg="twist_mux" type="twist_mux" name="twist_mux" >

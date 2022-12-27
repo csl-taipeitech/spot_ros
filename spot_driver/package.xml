@@ -21,6 +21,11 @@
   <exec_depend>interactive_marker_twist_server</exec_depend>
   <exec_depend>teleop_twist_joy</exec_depend>
   <exec_depend>velodyne_pointcloud</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>depth_image_proc</exec_depend>
+  <exec_depend>pcl_ros</exec_depend>
+  <exec_depend>pcl_conversions</exec_depend>
+  <exec_depend>microstrain_inertial_driver</exec_depend>
 
   <export>
     <rosdoc config="rosdoc.yaml" />

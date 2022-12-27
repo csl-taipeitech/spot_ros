@@ -5,6 +5,10 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   sensor_msgs
+  tf2
+  tf2_ros
+  tf2_sensor_msgs
+  pcl_ros
 )
 find_package(
   PCL REQUIRED
@@ -21,6 +25,9 @@ include_directories(
 
 add_executable(velodyne_filter src/spot_driver/velodyne_point_filter.cpp)
 target_link_libraries(velodyne_filter ${catkin_LIBRARIES} ${PCL_LIBRARIES})
+
+add_executable(pointcloud_fusion src/spot_driver/pointcloud_fusion.cpp)
+target_link_libraries(pointcloud_fusion ${catkin_LIBRARIES} ${PCL_LIBRARIES})
 
 catkin_install_python(PROGRAMS
     scripts/spot_ros

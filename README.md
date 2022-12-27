@@ -27,11 +27,12 @@ default values:
 | `SPOT_VELODYNE_AUTOLAUNCH` | `1`                               | If `1` and `SPOT_VELODYNE` is also 1, the VLP16 ROS node will start automatically          |
 | `SPOT_VELODYNE_XYZ`        | `0 0 0`                           | XYZ offset for the VLP-16 from the backpack lidar mount                                    |
 | `SPOT_VELODYNE_RPY`        | `0 0 0`                           | RPY offset for the VLP-16 from the backpack lidar mount                                    |
-| `SPOT_VELODYNE_HOST`       | `192.168.131.20`                  | IP address of the VLP-16 sensor                                                            |
+| `SPOT_VELODYNE_HOST`       | `192.168.1.201`                   | IP address of the VLP-16 sensor                                                            |
 | `SPOT_URDF_EXTRAS`         | `empty.urdf`                      | Optional URDF file to add additional joints and links to the robot                         |
 | `SPOT_JOY_DEVICE`          | `/dev/input/js0`                  | The Linux joypad input device used by the `joy_teleop` node                                |
 | `SPOT_JOY_CONFIG`          | `spot_control/config/teleop.yaml` | Joypad button/axis configuration file for `joy_teleop`                                     |
-| `SPOT_ARM`                 | `0`                               | If `1`, adds the Spot arm to the URDF                                                             |
+| `SPOT_ARM`                 | `0`                               | If `1`, adds the Spot arm to the URDF                                                      |
+| `SPOT_IMU`                 | `0`                               | If `1`, adds the Spot imu to the URDF                                                      |
 
 
 # Building Quick-Start
