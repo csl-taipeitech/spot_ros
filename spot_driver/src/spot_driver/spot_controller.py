@@ -9,7 +9,9 @@ class SpotControl:
     def __init__(self):
         self.cmd_pub = rospy.Publisher('cmd_vel', Twist, queue_size=1)
         self.body_pub = rospy.Publisher('body_pose', Pose, queue_size=1)
+        self.motion_mode = SetBoolRequest()
         self.stair_mode = SetBoolRequest()
+        self.motion_mode.data = False
         self.stair_mode.data = False
         self.current_mode = ''
         self.linear_x_scale = 0.8
@@ -20,9 +22,22 @@ class SpotControl:
         # Logi F710
         trig = TriggerRequest()
         # rospy.loginfo('current_mode: {}'.format(self.current_mode))
-        if data.buttons[4] == 1 and data.buttons[5] == 1 and data.buttons[2] == 1:
-            self.current_mode = 'cut power'
-            self.estop_client.call(trig) # Estop
+        if data.buttons[4] == 1 and data.buttons[5] == 1 and data.buttons[2] == 1: # LB + RB + B
+            self.current_mode = 'Stop'
+            # Power
+            # self.estop_client.call(trig) # Estop
+            # Motion
+            self.motion_mode.data = False
+            self.allow_motion_client.call(self.motion_mode)
+            return
+        if data.buttons[6] == 1 and data.buttons[7] == 1 and data.buttons[2] == 1: # LT + RT + B
+            self.current_mode = ''
+            # Power
+            # self.estop_release_client.call(trig) # Estop Release
+            # self.power_on_client.call(trig) # Power On
+            # Motion
+            self.motion_mode.data = True
+            self.allow_motion_client.call(self.motion_mode)
             return
         if data.buttons[4] == 1 and data.buttons[5] != 1 and data.buttons[0] == 1:
             srv = SetLocomotionRequest()
@@ -62,6 +77,10 @@ class SpotControl:
         if data.buttons[9] == 1:
             self.current_mode = 'Auto'
             
+        if self.current_mode == 'Auto':
+            # Wait for mode change
+            return
+        
         if self.current_mode == 'Hop' or self.current_mode == 'Jog' \
             or self.current_mode == 'Amble' or self.current_mode == 'Crawl' \
             or self.current_mode == 'Walk' or self.current_mode == 'Stair':
@@ -95,8 +114,11 @@ class SpotControl:
         rospy.Subscriber('joy', Joy, self.joy_callback)
         
         self.estop_client = rospy.ServiceProxy('estop/gentle', Trigger)
+        self.estop_release_client = rospy.ServiceProxy('estop/release', Trigger)
+        self.power_on_client = rospy.ServiceProxy('power_on', Trigger)
         self.stand_client = rospy.ServiceProxy('stand', Trigger)
         self.sit_client = rospy.ServiceProxy('sit', Trigger)
+        self.allow_motion_client = rospy.ServiceProxy('allow_motion', SetBool)
         self.stair_client = rospy.ServiceProxy('stair_mode', SetBool)
         self.locomotion_client = rospy.ServiceProxy('locomotion_mode', SetLocomotion)
         

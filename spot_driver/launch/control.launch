@@ -18,6 +18,9 @@
       <!-- <node pkg="teleop_twist_joy" type="teleop_node" name="teleop_twist_joy"/> -->
       <node pkg="spot_driver" type="spot_controller" name="F710_controller" output="screen">
         <remap from="estop/gentle" to="/spot/estop/gentle" />
+        <remap from="estop/release" to="/spot/estop/release" />
+        <remap from="power_on" to="/spot/power_on" />
+        <remap from="allow_motion" to="/spot/allow_motion" />
         <remap from="stand" to="/spot/stand" />
         <remap from="sit" to="/spot/sit" />
         <remap from="stair_mode" to="/spot/stair_mode" />
