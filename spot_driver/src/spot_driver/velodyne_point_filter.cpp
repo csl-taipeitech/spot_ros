@@ -5,7 +5,7 @@
 
 // pcl lib
 #include <pcl/point_types.h>
-#include <pcl/filters/passthrough.h>
+#include <pcl/filters/crop_box.h>
 #include <pcl_conversions/pcl_conversions.h>
 
 pcl::PointCloud<pcl::PointXYZI>::Ptr points (new pcl::PointCloud<pcl::PointXYZI>);
@@ -14,7 +14,7 @@ ros::Publisher points_pub;
 
 void point_cb(const sensor_msgs::PointCloud2Ptr & pt_ptr)
 {
-  static pcl::PassThrough<pcl::PointXYZI> pass;
+  static pcl::CropBox<pcl::PointXYZI> boxFilter;
   
   pcl::fromROSMsg(*pt_ptr, *points);
   if (points->points.size() == 0)
@@ -22,13 +22,11 @@ void point_cb(const sensor_msgs::PointCloud2Ptr & pt_ptr)
     return;
   }
 
-  pass.setInputCloud(points);
-  pass.setFilterFieldName("x");
-  pass.setFilterLimits(-0.2, 1.0);
-  pass.setFilterFieldName("y");
-  pass.setFilterLimits(-0.22, 0.22);
-  pass.setNegative(true);
-  pass.filter(*points);
+  boxFilter.setMin(Eigen::Vector4f(-0.2, -0.22, -INFINITY, 1.0));
+  boxFilter.setMax(Eigen::Vector4f(0.85, 0.22, INFINITY, 1.0));
+  boxFilter.setInputCloud(points);
+  boxFilter.setNegative(true);
+  boxFilter.filter(*points);
 
   pcl::toROSMsg(*points, points2);
   points_pub.publish(points2);
